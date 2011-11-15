@@ -15,8 +15,7 @@ int main(/*int argc, char **argv*/)
     lisp_value *improper = lisp_value_new_cons(a, b);
     lisp_value *proper = lisp_value_new_cons(c, lisp_value_new_cons(d, lisp_value_new_cons(e, lisp_value_new_cons_nil())));
 
-    char *s;
-    s = lisp_value_sprint(improper);
+    char *s = lisp_value_sprint(improper);
     printf("%s\n", s);
     talloc_free(s);
     s = lisp_value_sprint(proper);
