@@ -4,7 +4,7 @@
 
 char *lisp_value_sprint_cons(lisp_value *value)
 {
-    char *car_s, *cdr_s, *s;
+    char *car_s, *cdr_s = NULL, *s;
     car_s = lisp_value_sprint(LISP_CONS_CAR(value));
     if (LISP_CONS_CDR(value)->type == LISP_TYPE_CONS) {
         if (LISP_CONS_NIL(LISP_CONS_CDR(value))) {
