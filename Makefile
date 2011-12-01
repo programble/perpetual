@@ -19,6 +19,10 @@ ifeq ($(TARGET),debug)
 	override CFLAGS += -ggdb -O0 -DDEBUG
 endif
 
+ifeq ($(TARGET),release)
+	override CFLAGS += -DNDEBUG
+endif
+
 # Find all sources
 SOURCES := $(shell find src/ -name '*.c')
 OBJECTS := $(SOURCES:%.c=%.o)
