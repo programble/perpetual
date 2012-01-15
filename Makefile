@@ -5,14 +5,15 @@ OUTPUT := perpetual
 TARGET := debug
 
 # Libraries to use
-LIBS   := talloc
+LIBS   := -ldl
+PCLIBS := talloc
 
 # Compiler options
 CC                := clang
-override CFLAGS   += -std=c99 -D_BSD_SOURCE -MMD $(shell pkg-config --cflags-only-other $(LIBS))
-override INCLUDES += -Iinclude/ $(shell pkg-config --cflags-only-I $(LIBS))
+override CFLAGS   += -std=c99 -D_BSD_SOURCE -MMD $(shell pkg-config --cflags-only-other $(PCLIBS))
+override INCLUDES += -Iinclude/ $(shell pkg-config --cflags-only-I $(PCLIBS))
 override WARNINGS += -Wall -Wextra
-override LDFLAGS  += $(shell pkg-config --libs $(LIBS))
+override LDFLAGS  += $(LIBS) $(shell pkg-config --libs $(PCLIBS))
 
 # Target-specific flags
 ifeq ($(TARGET),debug)
