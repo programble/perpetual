@@ -1,5 +1,7 @@
 #include <assert.h>
 
+#include "metadata.h"
+
 #ifndef __LISP_VALUE_H__
 #define __LISP_VALUE_H__
 
@@ -12,6 +14,7 @@ enum lisp_type {
 typedef struct lisp_value {
     enum lisp_type type;
     void *value;
+    metadata *meta;
 } lisp_value;
 
 struct lisp_cons {
@@ -27,16 +30,19 @@ struct lisp_cons {
 #define LISP_CONS_CDR(x) LISP_CONS(x)->cdr
 #define LISP_CONS_NIL(x) !LISP_CONS(x)
 
-// src/lisp_value_new.c
+// src/lisp_value/new.c
 lisp_value *lisp_value_new_cons(lisp_value *car, lisp_value *cdr);
 lisp_value *lisp_value_new_cons_nil(void);
 lisp_value *lisp_value_new_int(int *value);
 lisp_value *lisp_value_new_symbol(char *value);
 
-// src/lisp_value_delete.c
+// src/lisp_value/delete.c
 void lisp_value_delete(lisp_value *value);
 
-// src/lisp_value_sprint.c
+// src/lisp_value/meta.c
+void lisp_value_set_meta(lisp_value *value, metadata *meta);
+
+// src/lisp_value/sprint.c
 char *lisp_value_sprint(lisp_value *value);
 
 #endif /* __LISP_VALUE_H__ */

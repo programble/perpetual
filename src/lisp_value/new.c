@@ -7,6 +7,7 @@ static lisp_value *lisp_value_new(enum lisp_type type, void *value)
     lisp_value *new = talloc(NULL, lisp_value);
     new->type = type;
     new->value = talloc_steal(new, value);
+    new->meta = NULL;
     return new;
 }
 
