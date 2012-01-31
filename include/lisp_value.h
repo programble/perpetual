@@ -1,9 +1,12 @@
 #include <assert.h>
 
+#ifndef __LISP_VALUE_H__
+#define __LISP_VALUE_H__
+
 enum lisp_type {
     LISP_TYPE_CONS,
-    LISP_TYPE_INT,
     LISP_TYPE_SYMBOL,
+    LISP_TYPE_INT,
 };
 
 typedef struct lisp_value {
@@ -35,3 +38,5 @@ void lisp_value_delete(lisp_value *value);
 
 // src/lisp_value_sprint.c
 char *lisp_value_sprint(lisp_value *value);
+
+#endif /* __LISP_VALUE_H__ */
