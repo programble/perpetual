@@ -1,9 +1,10 @@
+#pragma once
+#ifndef __LISP_VALUE_H__
+#define __LISP_VALUE_H__
+
 #include <assert.h>
 
 #include "metadata.h"
-
-#ifndef __LISP_VALUE_H__
-#define __LISP_VALUE_H__
 
 enum lisp_type {
     LISP_TYPE_CONS,
