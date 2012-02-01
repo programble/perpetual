@@ -22,4 +22,10 @@ void hashmap_set(hashmap *map, char *key, void *value);
 void *hashmap_get(hashmap *map, char *key);
 void *hashmap_del(hashmap *map, char *key);
 
+#ifdef DEBUG
+
+void hashmap_dot(hashmap *map);
+
+#endif /* DEBUG */
+
 #endif /* __HASHMAP_H__ */
