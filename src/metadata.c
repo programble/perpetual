@@ -15,3 +15,8 @@ void metadata_delete(metadata *data)
 {
     talloc_free(data);
 }
+
+metadata *metadata_copy(metadata *data)
+{
+    return metadata_new(data->file, data->line, data->col);
+}

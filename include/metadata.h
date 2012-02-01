@@ -10,5 +10,6 @@ typedef struct metadata {
 
 metadata *metadata_new(char *file, int line, int col);
 void metadata_delete(metadata *data);
+metadata *metadata_copy(metadata *data);
 
 #endif /* __METADATA_H__ */
