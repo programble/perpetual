@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __parser_H__
-#define __parser_H__
+#ifndef __PARSER_H__
+#define __PARSER_H__
 
 #include "lisp_value.h"
 #include "metadata.h"
@@ -24,4 +24,4 @@ void parser_perror(parser *p);
 
 lisp_value *parser_parse(parser *p);
 
-#endif /* __parser_H__ */
+#endif /* __PARSER_H__ */
