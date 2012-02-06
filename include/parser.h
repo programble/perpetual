@@ -5,6 +5,8 @@
 #include "lisp_value.h"
 #include "metadata.h"
 
+#define PARSER_ERROR(p) (p->error != PARSER_ENONE)
+
 typedef struct parser {
     char *data;
     int len;

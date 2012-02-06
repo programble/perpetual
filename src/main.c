@@ -22,7 +22,7 @@ int main(int argc, char **argv)
             lisp_value_delete(value);
         }
         // TODO: Macro for this test?
-        if (p->error != PARSER_ENONE)
+        if (PARSER_ERROR(p))
             parser_perror(p);
         parser_delete(p);
         add_history(line);
