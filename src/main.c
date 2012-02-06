@@ -21,7 +21,6 @@ int main(int argc, char **argv)
             talloc_free(sprint);
             lisp_value_delete(value);
         }
-        // TODO: Macro for this test?
         if (PARSER_ERROR(p))
             parser_perror(p);
         parser_delete(p);
