@@ -13,8 +13,6 @@ typedef struct hashmap {
     hashmap_node *root;
 } hashmap;
 
-int hashmap_hash(char *key);
-
 hashmap *hashmap_new();
 void hashmap_delete(hashmap *map);
 
@@ -23,9 +21,7 @@ void *hashmap_get(hashmap *map, char *key);
 void *hashmap_del(hashmap *map, char *key);
 
 #ifdef DEBUG
-
 void hashmap_dot(hashmap *map);
-
-#endif /* DEBUG */
+#endif
 
 #endif /* __HASHMAP_H__ */
