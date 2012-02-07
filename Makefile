@@ -27,4 +27,8 @@ clean:
 	@echo -e " [\033[31;1mRM\033[0m] $(OUTPUT)"
 	@rm -f $(OUTPUT)
 
+config.mk:
+	@echo "Run ./configure before running make"
+	@false
+
 .PHONY: all clean
