@@ -182,7 +182,7 @@ void *hashmap_del(hashmap *map, char *key)
 
 void hashmap_node_dot(hashmap_node *node)
 {
-    printf("%d [label=\"%s (%d) -> %s\"];\n", node->hash, node->key, node->hash, node->value);
+    printf("%d [label=\"%s (%d) -> %s\"];\n", node->hash, node->key, node->hash, (char *)node->value);
     if (node->parent)
         printf("%d -> %d [label=\"parent\"];\n", node->hash, node->parent->hash);
     if (node->lesser) {
