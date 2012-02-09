@@ -74,6 +74,12 @@ features.each do |f|
   when 'compile'
     config.cflags '-c'
 
+  when 'preprocess'
+    config.cflags '-E'
+
+  when 'assemble'
+    config.cflags '-S'
+
   when 'release'
     config.define 'NDEBUG'
 
