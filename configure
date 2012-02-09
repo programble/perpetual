@@ -2,7 +2,7 @@
 
 require 'set'
 
-class BuildConfig
+class Configure
   attr_accessor :output, :cc
 
   def initialize
@@ -11,41 +11,40 @@ class BuildConfig
   end
 
   def to_s
-    [
-      "OUTPUT := #{@output}",
-      "CC := #{@cc}",
-      "CFLAGS := #{@cflags.join(' ')}",
-      "LDFLAGS := #{@ldflags.join(' ')}"
-    ].join("\n")
+    %Q[
+      OUTPUT := #{@output}
+      CC := #{@cc}
+      CFLAGS := #{@cflags.join(' ')}
+      LDFLAGS := #{@ldflags.join(' ')}]
   end
 
   def cflags(*a)
-    @cflags.concat(a)
+    @cflags += a
   end
 
   def ldflags(*a)
-    @ldflags.concat(a)
+    @ldflags += a
   end
 
   def define(*a)
-    cflags(*a.map {|x| "-D#{x}"})
+    @cflags += a.map {|x| "-D#{x}"}
   end
 
   def include(*a)
-    cflags(*a.map {|x| "-I#{x}"})
+    @cflags += a.map {|x| "-I#{x}"}
   end
 
   def warning(*a)
-    cflags(*a.map {|x| "-W#{x}"})
+    @cflags += a.map {|x| "-W#{x}"}
   end
 
   def link(*a)
-    ldflags(*a.map {|x| "-l#{x}"})
+    @ldflags += a.map {|x| "-l#{x}"}
   end
 end
 
-config = BuildConfig.new
-features = Set.new ['default', 'compile', 'talloc', 'readline']
+config = Configure.new
+features = Set.new ['default', 'detect', 'compile', 'talloc', 'readline']
 
 ARGV.each do |arg|
   if arg[0] == '+'
