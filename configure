@@ -61,11 +61,16 @@ features.each do |f|
   case f
   when 'default'
     config.output ||= 'perpetual'
-    config.cc ||= 'clang'
     config.cflags '-std=c99', '-MMD'
     config.define '_BSD_SOURCE'
     config.include 'include/'
     config.warning 'all', 'extra'
+
+  when 'detect'
+    config.cc ||= %w[clang gcc cc].find do |cc|
+      %x[which #{cc} 2> /dev/null]
+      $?.exitstatus == 0
+    end
 
   when 'compile'
     config.cflags '-c'
