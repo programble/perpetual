@@ -16,7 +16,7 @@ $(OUTPUT): $(OBJECTS)
 -include $(DFILES)
 
 %.o: %.c
-	@echo -e " [\033[34;1mCC\033[0m] $@"
+	@echo -e " [\033[34;1mCC\033[0m] $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
 clean:
