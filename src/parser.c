@@ -117,9 +117,8 @@ lisp_value *parser_parse_cons(parser *p)
 
 lisp_value *parser_parse(parser *p)
 {
-    // Do nothing if an error occurred
     // This should never be called after an error
-    if (p->error != PARSER_ENONE) return NULL;
+    assert(p->error != PARSER_ENONE);
 
     parser_skip_whitespace(p);
 
