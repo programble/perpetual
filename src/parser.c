@@ -7,6 +7,8 @@
 #define WHITESPACE " \t\n\r"
 #define DELIMETER WHITESPACE ")"
 
+#define PARSER_EOF(p) (p->index == p->len)
+
 parser *parser_new(char *file, char *data)
 {
     parser *new = talloc(NULL, parser);
@@ -58,7 +60,7 @@ char parser_next(parser *p)
 
 void parser_skip_whitespace(parser *p)
 {
-    if (p->index == p->len)
+    if (PARSER_EOF(p))
         return;
     if (strchr(WHITESPACE, p->data[p->index]))
         while (strchr(WHITESPACE, parser_next(p)));
@@ -123,7 +125,7 @@ lisp_value *parser_parse(parser *p)
     parser_skip_whitespace(p);
 
     // Nothing more to parse (NULL with no error)
-    if (p->index == p->len) return NULL;
+    if (PARSER_EOF(p)) return NULL;
 
     char c = p->data[p->index];
 
