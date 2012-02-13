@@ -5,6 +5,7 @@
 #include "parser.h"
 
 #define WHITESPACE " \t\n\r"
+#define DELIMETER WHITESPACE ")"
 
 parser *parser_new(char *file, char *data)
 {
@@ -73,7 +74,7 @@ char *parser_read_until(parser *p, char *end)
 
 lisp_value *parser_parse_symbol(parser *p)
 {
-    char *sym = parser_read_until(p, WHITESPACE ")");
+    char *sym = parser_read_until(p, DELIMETER);
     lisp_value *value = lisp_value_new_symbol(sym);
     lisp_value_set_meta(value, metadata_copy(p->meta));
     return value;
