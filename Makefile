@@ -19,7 +19,7 @@ $(OUTPUT): $(OBJECTS)
 	@echo -e " [\033[34;1mCC\033[0m] $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
-clean:
+clean: config.mk
 	@echo -e " [\033[31;1mRM\033[0m] $(OBJECTS)"
 	@rm -f $(OBJECTS)
 	@echo -e " [\033[31;1mRM\033[0m] $(DFILES)"
@@ -31,7 +31,7 @@ config.mk:
 	@echo "Run ./configure before running make"
 	@false
 
-install: $(OUTPUT)
+install: config.mk $(OUTPUT)
 	@echo -e " [\033[33;1mIN\033[0m] $(OUTPUT)"
 	@install -D $(OUTPUT) $(DESTDIR)$(PREFIX)/bin/$(OUTPUT)
 
