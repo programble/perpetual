@@ -82,8 +82,31 @@ lisp_value *parser_parse_symbol(parser *p)
 
 lisp_value *parser_parse_int(parser *p)
 {
-    // TODO: Implement
-    return NULL;
+    char *numstr = parser_read_until(p, DELIMETER);
+
+    if (!strcmp(numstr, "-")) {
+        // Construct a symbol instead
+        lisp_value *value = lisp_value_new_symbol(numstr);
+        lisp_value_set_meta(value, metadata_copy(p->meta));
+        return value;
+    }
+
+    // A bit of a hack to detect trailing garbage
+    int *num = talloc(NULL, int);
+    int valid;
+    char garbage;
+    valid = sscanf(numstr, "%i%c", num, &garbage);
+    if (valid != 1) {
+        // TODO: Set error
+        talloc_free(numstr);
+        talloc_free(num);
+        return NULL;
+    }
+    talloc_free(numstr);
+
+    lisp_value *value = lisp_value_new_int(num);
+    lisp_value_set_meta(value, metadata_copy(p->meta));
+    return value;
 }
 
 lisp_value *parser_parse_cons(parser *p)
