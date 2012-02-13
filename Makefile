@@ -31,4 +31,8 @@ config.mk:
 	@echo "Run ./configure before running make"
 	@false
 
+install: $(OUTPUT)
+	@echo -e " [\033[33;1mIN\033[0m] $(OUTPUT)"
+	@install -D $(OUTPUT) $(DESTDIR)$(PREFIX)/bin/$(OUTPUT)
+
 .PHONY: all clean

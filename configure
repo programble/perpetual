@@ -3,7 +3,7 @@
 require 'set'
 
 class Configure
-  attr_accessor :output, :cc
+  attr_accessor :output, :cc, :destdir, :prefix
 
   def initialize
     @cflags = []
@@ -15,7 +15,9 @@ class Configure
       OUTPUT := #{@output}
       CC := #{@cc}
       CFLAGS := #{@cflags.join(' ')}
-      LDFLAGS := #{@ldflags.join(' ')}]
+      LDFLAGS := #{@ldflags.join(' ')}
+      DESTDIR := #{@destdir}
+      PREFIX := #{@prefix}]
   end
 
   def cflags(*a)
@@ -60,6 +62,8 @@ features.each do |f|
   case f
   when 'default'
     config.output ||= 'perpetual'
+    config.destdir ||= ''
+    config.prefix ||= '/usr/local'
     config.cflags '-std=c99', '-MMD'
     config.define '_BSD_SOURCE'
     config.include 'include/'
