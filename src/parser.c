@@ -111,10 +111,104 @@ lisp_value *parser_parse_int(parser *p)
     return value;
 }
 
+lisp_value *parser_parse_cons_cdr(parser *p)
+{
+    parser_skip_whitespace(p);
+    if (PARSER_EOF(p)) {
+        // TODO: Set error info
+        p->error = PARSER_EEOF;
+        return NULL;
+    }
+
+    // End of list
+    if (p->data[p->index] == ')') {
+        parser_next(p);
+        lisp_value *value = lisp_value_new_cons_nil();
+        lisp_value_set_meta(value, metadata_copy(p->meta));
+        return value;
+    }
+
+    lisp_value *cadr = parser_parse(p);
+    if (!cadr) return NULL;
+    lisp_value *cddr = parser_parse_cons_cdr(p);
+    if (!cddr) {
+        lisp_value_delete(cadr);
+        return NULL;
+    }
+
+    lisp_value *value = lisp_value_new_cons(cadr, cddr);
+    lisp_value_set_meta(value, metadata_copy(p->meta));
+    return value;
+}
+
 lisp_value *parser_parse_cons(parser *p)
 {
-    // TODO: Implement
-    return NULL;
+    // Skip open-paren and any whitespace
+    parser_next(p);
+    parser_skip_whitespace(p);
+
+    if (PARSER_EOF(p)) {
+        // TODO: Set error info
+        p->error = PARSER_EEOF;
+        return NULL;
+    }
+
+    // Empty list (nil)
+    if (p->data[p->index] == ')') {
+        parser_next(p);
+        lisp_value *value = lisp_value_new_cons_nil();
+        lisp_value_set_meta(value, metadata_copy(p->meta));
+        return value;
+    }
+
+    lisp_value *car = parser_parse(p);
+    if (!car) return NULL;
+
+    parser_skip_whitespace(p);
+    if (PARSER_EOF(p)) {
+        // TODO: Set error info
+        p->error = PARSER_EEOF;
+        lisp_value_delete(car);
+        return NULL;
+    }
+
+    // Improper list
+    if (p->data[p->index] == '.') {
+        parser_next(p);
+
+        lisp_value *cdr = parser_parse(p);
+        if (!cdr) {
+            // TODO: Set error info
+            p->error = PARSER_EEOF;
+            lisp_value_delete(car);
+            return NULL;
+        }
+
+        parser_skip_whitespace(p);
+        if (PARSER_EOF(p) || p->data[p->index] != ')') {
+            // TODO: Set error info
+            p->error = PARSER_EEOF;
+            lisp_value_delete(car);
+            lisp_value_delete(cdr);
+            return NULL;
+        }
+        parser_next(p);
+
+        lisp_value *value = lisp_value_new_cons(car, cdr);
+        lisp_value_set_meta(value, metadata_copy(p->meta));
+        return value;
+    }
+
+    // Proper list
+    lisp_value *cdr = parser_parse_cons_cdr(p);
+    if (!cdr) {
+        lisp_value_delete(car);
+        return NULL;
+    }
+
+    lisp_value *value = lisp_value_new_cons(car, cdr);
+    lisp_value_set_meta(value, metadata_copy(p->meta));
+    return value;
 }
 
 lisp_value *parser_parse(parser *p)
