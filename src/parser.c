@@ -33,6 +33,9 @@ void parser_perror(parser *p)
         case PARSER_EMISMATCH:
             printf("mismatched parenthesis\n");
             break;
+        case PARSER_EINVALID:
+            printf("invalid %s literal\n", p->edata);
+            break;
     }
 }
 
@@ -93,7 +96,8 @@ lisp_value *parser_parse_int(parser *p)
     char garbage;
     valid = sscanf(numstr, "%i%c", num, &garbage);
     if (valid != 1) {
-        // TODO: Set error
+        p->error = PARSER_EINVALID;
+        p->edata = "integer";
         talloc_free(numstr);
         talloc_free(num);
         return NULL;

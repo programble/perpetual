@@ -16,6 +16,7 @@ typedef struct parser {
         PARSER_ENONE,
         PARSER_EEOF,
         PARSER_EMISMATCH,
+        PARSER_EINVALID,
     } error;
     char *edata;
 } parser;
