@@ -28,8 +28,7 @@ void parser_perror(parser *p)
             printf("the operation completed successfully\n");
             break;
         case PARSER_EEOF:
-            // TODO: More info (while parsing what) (store in p)
-            printf("unexpected eof\n");
+            printf("unexpected eof while parsing %s\n", p->edata);
             break;
         case PARSER_EMISMATCH:
             printf("mismatched parenthesis\n");
@@ -110,8 +109,8 @@ lisp_value *parser_parse_cons_cdr(parser *p)
 {
     parser_skip_whitespace(p);
     if (PARSER_EOF(p)) {
-        // TODO: Set error info
         p->error = PARSER_EEOF;
+        p->edata = "cons";
         return NULL;
     }
 
@@ -143,8 +142,8 @@ lisp_value *parser_parse_cons(parser *p)
     parser_skip_whitespace(p);
 
     if (PARSER_EOF(p)) {
-        // TODO: Set error info
         p->error = PARSER_EEOF;
+        p->edata = "cons";
         return NULL;
     }
 
@@ -161,8 +160,8 @@ lisp_value *parser_parse_cons(parser *p)
 
     parser_skip_whitespace(p);
     if (PARSER_EOF(p)) {
-        // TODO: Set error info
         p->error = PARSER_EEOF;
+        p->edata = "cons";
         talloc_free(car);
         return NULL;
     }
@@ -173,16 +172,17 @@ lisp_value *parser_parse_cons(parser *p)
 
         lisp_value *cdr = parser_parse(p);
         if (!cdr) {
-            // TODO: Set error info
             p->error = PARSER_EEOF;
+            p->edata = "cons";
             talloc_free(car);
             return NULL;
         }
 
         parser_skip_whitespace(p);
         if (PARSER_EOF(p) || p->data[p->index] != ')') {
-            // TODO: Set error info
+            // TODO: Separate error for no close-paren
             p->error = PARSER_EEOF;
+            p->edata = "cons";
             talloc_free(car);
             talloc_free(cdr);
             return NULL;

@@ -17,6 +17,7 @@ typedef struct parser {
         PARSER_EEOF,
         PARSER_EMISMATCH,
     } error;
+    char *edata;
 } parser;
 
 parser *parser_new(char *file, char *data);
