@@ -46,7 +46,7 @@ hashmap_node *hashmap_node_new(hashmap_node *parent,
     new->parent = parent;
     new->key = talloc_strdup(new, key);
     new->hash = hash;
-    new->value = value;
+    new->value = talloc_steal(new, value);
     new->lesser = lesser;
     new->greater = greater;
     return new;
@@ -62,9 +62,10 @@ void hashmap_node_set(hashmap_node *node, char *key, int hash, void *value)
         hashmap_node_set(node->greater, key, hash, value);
     else if (hash < node->hash)
         hashmap_node_set(node->lesser, key, hash, value);
-    else if (hash == node->hash)
-        node->value = value;
-    else
+    else if (hash == node->hash) {
+        talloc_free(node->value);
+        node->value = talloc_steal(node, value);
+    } else
         assert(0);
 }
 
@@ -78,7 +79,7 @@ void hashmap_set(hashmap *map, char *key, void *value)
         hashmap_node *root = talloc(map, hashmap_node);
         root->key = key;
         root->hash = hash;
-        root->value = value;
+        root->value = talloc_steal(root, value);
         root->lesser = NULL;
         root->greater = NULL;
         root->parent = NULL;
@@ -104,19 +105,14 @@ void *hashmap_get(hashmap *map, char *key)
     return hashmap_node_get(map->root, hashmap_hash(key));
 }
 
-void *hashmap_node_del(hashmap *map, hashmap_node *node, int hash)
+void hashmap_node_del(hashmap *map, hashmap_node *node, int hash)
 {
-    void *value = NULL;
-
-    if (!node)
-        return value;
-
-    if (hash > node->hash)
+    if (hash > node->hash && node->greater)
         return hashmap_node_del(map, node->greater, hash);
-    else if (hash < node->hash)
+    else if (hash < node->hash && node->lesser)
         return hashmap_node_del(map, node->lesser, hash);
-    else {
-        value = node->value;
+    else if (hash == node->hash) {
+        talloc_free(node->value);
 
         if (node->greater && node->lesser) {
             hashmap_node *successor = node->greater;
@@ -164,16 +160,12 @@ void *hashmap_node_del(hashmap *map, hashmap_node *node, int hash)
             talloc_free(node);
         }
     }
-
-    return value;
 }
 
-void *hashmap_del(hashmap *map, char *key)
+void hashmap_del(hashmap *map, char *key)
 {
     if (map->root)
-        return hashmap_node_del(map, map->root, hashmap_hash(key));
-    else
-        return NULL;
+        hashmap_node_del(map, map->root, hashmap_hash(key));
 }
 
 #ifdef DEBUG
