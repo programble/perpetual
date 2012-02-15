@@ -10,11 +10,6 @@ scope *scope_new(scope *parent)
     return new;
 }
 
-void scope_delete(scope *value)
-{
-    talloc_free(value);
-}
-
 void scope_set(scope *sco, char *key, lisp_value *value)
 {
     hashmap_set(sco->map, key, value);

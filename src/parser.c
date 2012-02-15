@@ -20,11 +20,6 @@ parser *parser_new(char *file, char *data)
     return new;
 }
 
-void parser_delete(parser *p)
-{
-    talloc_free(p);
-}
-
 void parser_perror(parser *p)
 {
     printf("%s:%i:%i: error: ", p->meta->file, p->meta->line, p->meta->col);
@@ -132,7 +127,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     if (!cadr) return NULL;
     lisp_value *cddr = parser_parse_cons_cdr(p);
     if (!cddr) {
-        lisp_value_delete(cadr);
+        talloc_free(cadr);
         return NULL;
     }
 
@@ -168,7 +163,7 @@ lisp_value *parser_parse_cons(parser *p)
     if (PARSER_EOF(p)) {
         // TODO: Set error info
         p->error = PARSER_EEOF;
-        lisp_value_delete(car);
+        talloc_free(car);
         return NULL;
     }
 
@@ -180,7 +175,7 @@ lisp_value *parser_parse_cons(parser *p)
         if (!cdr) {
             // TODO: Set error info
             p->error = PARSER_EEOF;
-            lisp_value_delete(car);
+            talloc_free(car);
             return NULL;
         }
 
@@ -188,8 +183,8 @@ lisp_value *parser_parse_cons(parser *p)
         if (PARSER_EOF(p) || p->data[p->index] != ')') {
             // TODO: Set error info
             p->error = PARSER_EEOF;
-            lisp_value_delete(car);
-            lisp_value_delete(cdr);
+            talloc_free(car);
+            talloc_free(cdr);
             return NULL;
         }
         parser_next(p);
@@ -202,7 +197,7 @@ lisp_value *parser_parse_cons(parser *p)
     // Proper list
     lisp_value *cdr = parser_parse_cons_cdr(p);
     if (!cdr) {
-        lisp_value_delete(car);
+        talloc_free(car);
         return NULL;
     }
 

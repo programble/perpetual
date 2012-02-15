@@ -11,7 +11,6 @@ typedef struct scope {
 } scope;
 
 scope *scope_new(scope *parent);
-void scope_delete(scope *value);
 
 void scope_set(scope *sco, char *key, lisp_value *value);
 lisp_value *scope_get(scope *sco, char *key);

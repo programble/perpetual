@@ -14,7 +14,6 @@ typedef struct hashmap {
 } hashmap;
 
 hashmap *hashmap_new();
-void hashmap_delete(hashmap *map);
 
 void hashmap_set(hashmap *map, char *key, void *value);
 void *hashmap_get(hashmap *map, char *key);

@@ -19,11 +19,11 @@ int main(int argc, char **argv)
             char *sprint = lisp_value_sprint(value);
             printf("%s\n", sprint);
             talloc_free(sprint);
-            lisp_value_delete(value);
+            talloc_free(value);
         }
         if (PARSER_ERROR(p))
             parser_perror(p);
-        parser_delete(p);
+        talloc_free(p);
         add_history(line);
         READLINE_FREE(line);
     }

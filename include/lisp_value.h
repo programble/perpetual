@@ -37,9 +37,6 @@ lisp_value *lisp_value_new_cons_nil(void);
 lisp_value *lisp_value_new_int(int *value);
 lisp_value *lisp_value_new_symbol(char *value);
 
-// src/lisp_value/delete.c
-void lisp_value_delete(lisp_value *value);
-
 // src/lisp_value/meta.c
 void lisp_value_set_meta(lisp_value *value, metadata *meta);
 

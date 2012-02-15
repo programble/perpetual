@@ -11,11 +11,6 @@ metadata *metadata_new(char *file, int line, int col)
     return new;
 }
 
-void metadata_delete(metadata *data)
-{
-    talloc_free(data);
-}
-
 metadata *metadata_copy(metadata *data)
 {
     return metadata_new(data->file, data->line, data->col);

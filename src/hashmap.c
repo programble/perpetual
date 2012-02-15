@@ -32,11 +32,6 @@ hashmap *hashmap_new()
     return new;
 }
 
-void hashmap_delete(hashmap *map)
-{
-    talloc_free(map);
-}
-
 hashmap_node *hashmap_node_new(hashmap_node *parent,
                                char *key, int hash,
                                void *value,

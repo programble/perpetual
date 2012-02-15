@@ -20,7 +20,6 @@ typedef struct parser {
 } parser;
 
 parser *parser_new(char *file, char *data);
-void parser_delete(parser *p);
 
 void parser_perror(parser *p);
 
