@@ -8,6 +8,7 @@
 #define DELIMETER WHITESPACE ")"
 
 #define PARSER_EOF(p) (p->index == p->len)
+#define PARSER_SET_ERROR(p, e, d) p->error = e; p->edata = d
 
 parser *parser_new(char *file, char *data)
 {
@@ -96,8 +97,7 @@ lisp_value *parser_parse_int(parser *p)
     char garbage;
     valid = sscanf(numstr, "%i%c", num, &garbage);
     if (valid != 1) {
-        p->error = PARSER_EINVALID;
-        p->edata = "integer";
+        PARSER_SET_ERROR(p, PARSER_EINVALID, "integer");
         talloc_free(numstr);
         talloc_free(num);
         return NULL;
@@ -113,8 +113,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
 {
     parser_skip_whitespace(p);
     if (PARSER_EOF(p)) {
-        p->error = PARSER_EEOF;
-        p->edata = "cons";
+        PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
         return NULL;
     }
 
@@ -146,8 +145,7 @@ lisp_value *parser_parse_cons(parser *p)
     parser_skip_whitespace(p);
 
     if (PARSER_EOF(p)) {
-        p->error = PARSER_EEOF;
-        p->edata = "cons";
+        PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
         return NULL;
     }
 
@@ -164,8 +162,7 @@ lisp_value *parser_parse_cons(parser *p)
 
     parser_skip_whitespace(p);
     if (PARSER_EOF(p)) {
-        p->error = PARSER_EEOF;
-        p->edata = "cons";
+        PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
         talloc_free(car);
         return NULL;
     }
@@ -176,8 +173,7 @@ lisp_value *parser_parse_cons(parser *p)
 
         lisp_value *cdr = parser_parse(p);
         if (!cdr) {
-            p->error = PARSER_EEOF;
-            p->edata = "cons";
+            PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
             talloc_free(car);
             return NULL;
         }
@@ -185,8 +181,7 @@ lisp_value *parser_parse_cons(parser *p)
         parser_skip_whitespace(p);
         if (PARSER_EOF(p) || p->data[p->index] != ')') {
             // TODO: Separate error for no close-paren
-            p->error = PARSER_EEOF;
-            p->edata = "cons";
+            PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
             talloc_free(car);
             talloc_free(cdr);
             return NULL;
