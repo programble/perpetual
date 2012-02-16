@@ -58,10 +58,8 @@ char parser_next(parser *p)
 
 void parser_skip_whitespace(parser *p)
 {
-    if (PARSER_EOF(p))
-        return;
     if (strchr(WHITESPACE, p->data[p->index]))
-        while (strchr(WHITESPACE, parser_next(p)));
+        while (strchr(WHITESPACE, parser_next(p)) && !PARSER_EOF(p));
 }
 
 char *parser_read_until(parser *p, char *end)
