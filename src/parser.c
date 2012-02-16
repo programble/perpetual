@@ -7,6 +7,7 @@
 #define WHITESPACE " \t\n\r"
 #define DELIMETER WHITESPACE ")"
 
+#define PARSER_C(p) p->data[p->index]
 #define PARSER_EOF(p) (p->index == p->len)
 #define PARSER_SET_ERROR(p, e, d) p->error = e; p->edata = d
 
@@ -44,7 +45,7 @@ char parser_next(parser *p)
 {
     if (p->index < p->len) {
         p->index++;
-        char c = p->data[p->index];
+        char c = PARSER_C(p);
         if (c == '\n') {
             p->meta->line++;
             p->meta->col = 1;
@@ -58,13 +59,13 @@ char parser_next(parser *p)
 
 void parser_skip_whitespace(parser *p)
 {
-    if (strchr(WHITESPACE, p->data[p->index]))
+    if (strchr(WHITESPACE, PARSER_C(p)))
         while (strchr(WHITESPACE, parser_next(p)) && !PARSER_EOF(p));
 }
 
 char *parser_read_until(parser *p, char *end)
 {
-    char *start = &p->data[p->index];
+    char *start = &PARSER_C(p);
     int len;
     for (len = 1; !strchr(end, parser_next(p)) && p->index < p->len; len++);
     return talloc_strndup(NULL, start, len);
@@ -116,7 +117,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     }
 
     // End of list
-    if (p->data[p->index] == ')') {
+    if (PARSER_C(p) == ')') {
         parser_next(p);
         lisp_value *value = lisp_value_new_cons_nil();
         lisp_value_set_meta(value, metadata_copy(p->meta));
@@ -148,7 +149,7 @@ lisp_value *parser_parse_cons(parser *p)
     }
 
     // Empty list (nil)
-    if (p->data[p->index] == ')') {
+    if (PARSER_C(p) == ')') {
         parser_next(p);
         lisp_value *value = lisp_value_new_cons_nil();
         lisp_value_set_meta(value, metadata_copy(p->meta));
@@ -166,7 +167,7 @@ lisp_value *parser_parse_cons(parser *p)
     }
 
     // Improper list
-    if (p->data[p->index] == '.') {
+    if (PARSER_C(p) == '.') {
         parser_next(p);
 
         lisp_value *cdr = parser_parse(p);
@@ -177,7 +178,7 @@ lisp_value *parser_parse_cons(parser *p)
         }
 
         parser_skip_whitespace(p);
-        if (PARSER_EOF(p) || p->data[p->index] != ')') {
+        if (PARSER_EOF(p) || PARSER_C(p) != ')') {
             // TODO: Separate error for no close-paren
             PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
             talloc_free(car);
@@ -213,7 +214,7 @@ lisp_value *parser_parse(parser *p)
     // Nothing more to parse (NULL with no error)
     if (PARSER_EOF(p)) return NULL;
 
-    char c = p->data[p->index];
+    char c = PARSER_C(p);
 
     if (c == ')') { // A mismatched close-paren
         p->error = PARSER_EMISMATCH;
