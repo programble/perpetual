@@ -92,7 +92,7 @@ void *hashmap_node_get(hashmap_node *this, int hash)
         return hashmap_node_get(this->greater, hash);
     if (hash < this->hash)
         return hashmap_node_get(this->lesser, hash);
-    assert(0);
+    assert(0); return NULL;
 }
 
 void *hashmap_get(hashmap *this, char *key)
