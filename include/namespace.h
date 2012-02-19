@@ -14,4 +14,6 @@ typedef struct namespace {
 
 namespace *namespace_new(char *name, namespace *parent);
 
+namespace *namespace_get(namespace *this, char *name);
+
 #endif /* __NAMESPACE_H__ */
