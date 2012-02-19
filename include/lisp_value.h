@@ -43,4 +43,7 @@ void lisp_value_set_meta(lisp_value *this, metadata *meta);
 // src/lisp_value/sprint.c
 char *lisp_value_sprint(lisp_value *this);
 
+// src/lisp_value/dup.c
+lisp_value *lisp_value_dup(lisp_value *this);
+
 #endif /* __LISP_VALUE_H__ */
