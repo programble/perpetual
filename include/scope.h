@@ -5,8 +5,11 @@
 #include "hashmap.h"
 #include "lisp_value.h"
 
+struct namespace;
+
 typedef struct scope {
     struct scope *parent;
+    struct namespace *ns;
     hashmap *map;
 } scope;
 

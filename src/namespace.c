@@ -10,8 +10,11 @@ namespace *namespace_new(char *name, namespace *parent)
     new->children = talloc_steal(new, hashmap_new());
     if (parent) {
         new->bindings = scope_new(parent->bindings);
+        new->bindings->ns = new;
         hashmap_set(parent->children, name, new);
-    } else
+    } else {
         new->bindings = scope_new(NULL);
+        new->bindings->ns = new;
+    }
     return new;
 }

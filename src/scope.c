@@ -6,6 +6,8 @@ scope *scope_new(scope *parent)
 {
     scope *new = talloc(parent, scope);
     new->parent = parent;
+    if (parent)
+        new->ns = parent->ns;
     new->map = talloc_steal(new, hashmap_new());
     return new;
 }
