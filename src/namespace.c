@@ -9,10 +9,9 @@ namespace *namespace_new(char *name, namespace *parent)
     this->parent = parent;
     this->children = talloc_steal(this, hashmap_new());
     if (parent) {
-        this->bindings = scope_new(parent->bindings);
+        this->scope = scope_new(parent->scope);
         hashmap_set(parent->children, name, this);
     } else
-        this->bindings = scope_new(NULL);
-    this->bindings->ns = this;
+        this->scope = scope_new(NULL);
     return this;
 }

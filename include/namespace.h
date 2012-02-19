@@ -9,7 +9,7 @@ typedef struct namespace {
     char *name;
     struct namespace *parent;
     hashmap *children;
-    scope *bindings;
+    scope *scope;
 } namespace;
 
 namespace *namespace_new(char *name, namespace *parent);
