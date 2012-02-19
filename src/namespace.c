@@ -12,6 +12,6 @@ namespace *namespace_new(char *name, namespace *parent)
         this->scope = scope_new(parent->scope);
         hashmap_set(parent->children, name, this);
     } else
-        this->scope = scope_new(NULL);
+        this->scope = talloc_steal(this, scope_new(NULL));
     return this;
 }
