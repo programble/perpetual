@@ -4,31 +4,31 @@
 
 scope *scope_new(scope *parent)
 {
-    scope *new = talloc(parent, scope);
-    new->parent = parent;
+    scope *this = talloc(parent, scope);
+    this->parent = parent;
     if (parent)
-        new->ns = parent->ns;
-    new->map = talloc_steal(new, hashmap_new());
-    return new;
+        this->ns = parent->ns;
+    this->map = talloc_steal(this, hashmap_new());
+    return this;
 }
 
-void scope_set(scope *sco, char *key, lisp_value *value)
+void scope_set(scope *this, char *key, lisp_value *value)
 {
-    hashmap_set(sco->map, key, value);
+    hashmap_set(this->map, key, value);
 }
 
-lisp_value *scope_get(scope *sco, char *key)
+lisp_value *scope_get(scope *this, char *key)
 {
-    lisp_value *value = hashmap_get(sco->map, key);
+    lisp_value *value = hashmap_get(this->map, key);
     if (value)
         return value;
-    else if (sco->parent)
-        return scope_get(sco->parent, key);
+    else if (this->parent)
+        return scope_get(this->parent, key);
     else
         return NULL;
 }
 
-void scope_del(scope *sco, char *key)
+void scope_del(scope *this, char *key)
 {
-    hashmap_del(sco->map, key);
+    hashmap_del(this->map, key);
 }

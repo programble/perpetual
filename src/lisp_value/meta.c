@@ -3,7 +3,7 @@
 #include "lisp_value.h"
 #include "metadata.h"
 
-void lisp_value_set_meta(lisp_value *value, metadata *meta)
+void lisp_value_set_meta(lisp_value *this, metadata *meta)
 {
-    value->meta = talloc_steal(value, meta);
+    this->meta = talloc_steal(this, meta);
 }

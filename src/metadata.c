@@ -4,14 +4,14 @@
 
 metadata *metadata_new(char *file, int line, int col)
 {
-    metadata *new = talloc(NULL, metadata);
-    new->file = talloc_strdup(new, file);
-    new->line = line;
-    new->col = col;
-    return new;
+    metadata *this = talloc(NULL, metadata);
+    this->file = talloc_strdup(this, file);
+    this->line = line;
+    this->col = col;
+    return this;
 }
 
-metadata *metadata_copy(metadata *data)
+metadata *metadata_copy(metadata *this)
 {
-    return metadata_new(data->file, data->line, data->col);
+    return metadata_new(this->file, this->line, this->col);
 }

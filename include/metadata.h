@@ -9,6 +9,6 @@ typedef struct metadata {
 } metadata;
 
 metadata *metadata_new(char *file, int line, int col);
-metadata *metadata_copy(metadata *data);
+metadata *metadata_copy(metadata *this);
 
 #endif /* __METADATA_H__ */

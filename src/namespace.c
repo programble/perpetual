@@ -4,17 +4,15 @@
 
 namespace *namespace_new(char *name, namespace *parent)
 {
-    namespace *new = talloc(NULL, namespace);
-    new->name = name;
-    new->parent = parent;
-    new->children = talloc_steal(new, hashmap_new());
+    namespace *this = talloc(NULL, namespace);
+    this->name = name;
+    this->parent = parent;
+    this->children = talloc_steal(this, hashmap_new());
     if (parent) {
-        new->bindings = scope_new(parent->bindings);
-        new->bindings->ns = new;
-        hashmap_set(parent->children, name, new);
-    } else {
-        new->bindings = scope_new(NULL);
-        new->bindings->ns = new;
-    }
-    return new;
+        this->bindings = scope_new(parent->bindings);
+        hashmap_set(parent->children, name, this);
+    } else
+        this->bindings = scope_new(NULL);
+    this->bindings->ns = this;
+    return this;
 }

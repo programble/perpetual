@@ -4,19 +4,19 @@
 
 static lisp_value *lisp_value_new(enum lisp_type type, void *value)
 {
-    lisp_value *new = talloc(NULL, lisp_value);
-    new->type = type;
-    new->value = talloc_steal(new, value);
-    new->meta = NULL;
-    return new;
+    lisp_value *this = talloc(NULL, lisp_value);
+    this->type = type;
+    this->value = talloc_steal(this, value);
+    this->meta = NULL;
+    return this;
 }
 
 lisp_value *lisp_value_new_cons(lisp_value *car, lisp_value *cdr)
 {
-    lisp_value *new = lisp_value_new(LISP_TYPE_CONS, talloc(NULL, struct lisp_cons));
-    LISP_CONS_CAR(new) = talloc_steal(LISP_CONS(new), car);
-    LISP_CONS_CDR(new) = talloc_steal(LISP_CONS(new), cdr);
-    return new;
+    lisp_value *this = lisp_value_new(LISP_TYPE_CONS, talloc(NULL, struct lisp_cons));
+    LISP_CONS_CAR(this) = talloc_steal(LISP_CONS(this), car);
+    LISP_CONS_CDR(this) = talloc_steal(LISP_CONS(this), cdr);
+    return this;
 }
 
 lisp_value *lisp_value_new_cons_nil(void)

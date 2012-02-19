@@ -15,12 +15,12 @@ typedef struct hashmap {
 
 hashmap *hashmap_new();
 
-void hashmap_set(hashmap *map, char *key, void *value);
-void *hashmap_get(hashmap *map, char *key);
-void hashmap_del(hashmap *map, char *key);
+void hashmap_set(hashmap *this, char *key, void *value);
+void *hashmap_get(hashmap *this, char *key);
+void hashmap_del(hashmap *this, char *key);
 
 #ifdef DEBUG
-void hashmap_dot(hashmap *map);
+void hashmap_dot(hashmap *this);
 #endif
 
 #endif /* __HASHMAP_H__ */

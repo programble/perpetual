@@ -38,9 +38,9 @@ lisp_value *lisp_value_new_int(int *value);
 lisp_value *lisp_value_new_symbol(char *value);
 
 // src/lisp_value/meta.c
-void lisp_value_set_meta(lisp_value *value, metadata *meta);
+void lisp_value_set_meta(lisp_value *this, metadata *meta);
 
 // src/lisp_value/sprint.c
-char *lisp_value_sprint(lisp_value *value);
+char *lisp_value_sprint(lisp_value *this);
 
 #endif /* __LISP_VALUE_H__ */
