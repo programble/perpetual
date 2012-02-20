@@ -1,4 +1,5 @@
 #include <talloc.h>
+#include <assert.h>
 
 #include "lisp_value.h"
 
@@ -16,6 +17,8 @@ lisp_value *lisp_value_dup(lisp_value *this)
         int *i = talloc(NULL, int);
         *i = *LISP_INT(this);
         return lisp_value_new_int(i);
+    default:
+        assert(0); return NULL;
     }
     }
 }

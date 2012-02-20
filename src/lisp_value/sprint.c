@@ -37,6 +37,6 @@ char *lisp_value_sprint(lisp_value *this)
         case LISP_TYPE_SYMBOL:
             return talloc_asprintf(NULL, "%s", LISP_SYMBOL(this));
         default:
-            assert(0);
+            assert(0); return NULL;
     }
 }

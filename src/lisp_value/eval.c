@@ -57,6 +57,6 @@ lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
     case LISP_TYPE_INT:
         return lisp_value_dup(this);
     default:
-        assert(0);
+        assert(0); return NULL;
     }
 }
