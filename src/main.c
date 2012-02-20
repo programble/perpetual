@@ -5,28 +5,53 @@
 
 #include "lisp_value.h"
 #include "parser.h"
+#include "context.h"
+#include "namespace.h"
+#include "scope.h"
 
 int main(int argc, char **argv)
 {
     // TODO: Banner
     printf("Perpetual\n");
 
+    // Set up root namespace and evaluation context
+    namespace *root = namespace_new("", NULL);
+    namespace *core = namespace_new("core", root);
+    context *ctx = context_new(core);
+
+    // Some test bindings
+    scope_set(ctx->scope, "nil", lisp_value_new_cons_nil());
+    scope_set(ctx->scope, "t", lisp_value_new_symbol(talloc_strdup(NULL, "t")));
+
     char *line;
     while ((line = readline(">> "))) {
         parser *p = parser_new("<stdin>", line);
         lisp_value *value;
+
         while ((value = parser_parse(p))) {
-            char *sprint = lisp_value_sprint(value);
-            printf("%s\n", sprint);
-            talloc_free(sprint);
+            lisp_value *eval = lisp_value_eval(value, ctx);
+            if (eval) {
+                char *sprint = lisp_value_sprint(eval);
+                printf("%s\n", sprint);
+                talloc_free(sprint);
+                talloc_free(eval);
+            } else {
+                // TODO: Handle error
+                printf("error\n");
+            }
             talloc_free(value);
         }
+
         if (PARSER_ERROR(p))
             parser_perror(p);
         talloc_free(p);
+
         add_history(line);
         READLINE_FREE(line);
     }
+
+    talloc_free(root);
+    talloc_free(ctx);
 
     return 0;
 }

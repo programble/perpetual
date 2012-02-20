@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "metadata.h"
+#include "context.h"
 
 enum lisp_type {
     LISP_TYPE_CONS,
@@ -45,5 +46,8 @@ char *lisp_value_sprint(lisp_value *this);
 
 // src/lisp_value/dup.c
 lisp_value *lisp_value_dup(lisp_value *this);
+
+// src/lisp_value/eval.c
+lisp_value *lisp_value_eval(lisp_value *this, context *ctx);
 
 #endif /* __LISP_VALUE_H__ */
