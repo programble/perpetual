@@ -2,6 +2,8 @@
 #ifndef __CONTEXT_H__
 #define __CONTEXT_H__
 
+#include "callstack.h"
+
 // Including scope.h and namespace.h here would cause issues
 // They get included in context.c, so no worries
 struct scope;
@@ -12,6 +14,7 @@ struct namespace;
 typedef struct context {
     struct namespace *ns;
     struct scope *scope;
+    callstack *callstack;
 } context;
 
 context *context_new(struct namespace *ns);
