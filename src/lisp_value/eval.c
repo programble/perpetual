@@ -50,6 +50,7 @@ lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
 {
     callstack_push(ctx->callstack, NULL, this->meta);
+
     lisp_value *eval;
     switch (this->type) {
     case LISP_TYPE_INT:
@@ -64,7 +65,9 @@ lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
     default:
         assert(0); return NULL;
     }
-    // TODO: Check for exception
+
+    if (!eval)
+        return NULL;
     callstack_pop(ctx->callstack);
     return eval;
 }
