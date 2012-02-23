@@ -36,8 +36,9 @@ int main(int argc, char **argv)
                 talloc_free(sprint);
                 talloc_free(eval);
             } else {
-                // TODO: Handle error
-                printf("error\n");
+                printf("Some kind of error occurred, but I don't have exceptions yet!\n");
+                callstack_print(ctx->callstack);
+                callstack_clear(ctx->callstack);
             }
             talloc_free(value);
         }
