@@ -13,7 +13,7 @@ callstack *callstack_new()
 void callstack_push(callstack *this, metadata *meta)
 {
     callstack_node *node = talloc(this, callstack_node);
-    node->meta = meta;
+    node->meta = talloc_steal(node, metadata_dup(meta));
     node->next = this->head;
     this->head = node;
 }
