@@ -21,7 +21,7 @@ lisp_value *builtin_atom(lisp_value *args, context *ctx)
         return lisp_value_new_cons_nil();
 }
 
-lisp_value *builtin_quote(lisp_value *args, context *ctx)
+lisp_value *builtin_car(lisp_value *args, context *ctx)
 {
     if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
         // TODO: Set error
@@ -29,7 +29,57 @@ lisp_value *builtin_quote(lisp_value *args, context *ctx)
         return NULL;
     }
 
-    callstack_pop(ctx->callstack);
+    lisp_value *eval = lisp_value_eval(LISP_CONS_CAR(args), ctx);
+    if (!eval) return NULL;
+    if (eval->type != LISP_TYPE_CONS) {
+        // TODO: Set error
+        talloc_free(eval);
+        return NULL;
+    }
+
+    lisp_value *car;
+    if (LISP_CONS_NIL(eval))
+        car = lisp_value_new_cons_nil();
+    else
+        car = lisp_value_dup(LISP_CONS_CAR(eval));
+
+    talloc_free(eval);
+    return car;
+}
+
+lisp_value *builtin_cdr(lisp_value *args, context *ctx)
+{
+    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+        // TODO: Set error
+        (void) ctx;
+        return NULL;
+    }
+
+    lisp_value *eval = lisp_value_eval(LISP_CONS_CAR(args), ctx);
+    if (!eval) return NULL;
+    if (eval->type != LISP_TYPE_CONS) {
+        // TODO: Set error
+        talloc_free(eval);
+        return NULL;
+    }
+
+    lisp_value *cdr;
+    if (LISP_CONS_NIL(eval))
+        cdr = lisp_value_new_cons_nil();
+    else
+        cdr = lisp_value_dup(LISP_CONS_CDR(eval));
+
+    talloc_free(eval);
+    return cdr;
+}
+
+lisp_value *builtin_quote(lisp_value *args, context *ctx)
+{
+    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+        // TODO: Set error
+        (void) ctx;
+        return NULL;
+    }
 
     return lisp_value_dup(LISP_CONS_CAR(args));
 }
@@ -46,6 +96,8 @@ void builtins_bind(scope *sco)
 
 #define BIND(x) scope_set(sco, #x, lisp_value_new_builtin(builtin_ ##x, metadata_new(__FILE__, __LINE__, 0)))
     BIND(atom);
+    BIND(car);
+    BIND(cdr);
     BIND(quote);
 #undef BIND
 }
