@@ -36,8 +36,7 @@ char *lisp_value_sprint(lisp_value *this)
             talloc_free(cons);
             return s;
         case LISP_TYPE_BUILTIN:
-            // TODO: Some kind of real format
-            return talloc_strdup(NULL, "#<builtin>");
+            return talloc_asprintf(NULL, "#<%s>", this->meta->name);
         }
         default:
             assert(0); return NULL;
