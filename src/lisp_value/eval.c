@@ -55,7 +55,7 @@ lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
 
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
 {
-    callstack_push(ctx->callstack, NULL, this->meta);
+    callstack_push(ctx->callstack, this->meta);
 
     lisp_value *eval;
     switch (this->type) {

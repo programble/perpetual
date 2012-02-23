@@ -34,11 +34,11 @@ lisp_value *lisp_value_new_cons_nil(void)
     return lisp_value_new(LISP_TYPE_CONS, NULL);
 }
 
-lisp_value *lisp_value_new_builtin(lisp_builtin_func value)
+lisp_value *lisp_value_new_builtin(lisp_builtin_func value, metadata *meta)
 {
     lisp_value *this = talloc(NULL, lisp_value);
     this->type = LISP_TYPE_BUILTIN;
     this->value = value;
-    this->meta = NULL;
+    lisp_value_set_meta(this, meta);
     return this;
 }

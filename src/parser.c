@@ -78,7 +78,7 @@ lisp_value *parser_parse_int(parser *p)
     if (!strcmp(numstr, "-")) {
         // Construct a symbol instead
         lisp_value *value = lisp_value_new_symbol(numstr);
-        lisp_value_set_meta(value, metadata_copy(p->meta));
+        lisp_value_set_meta(value, metadata_dup(p->meta));
         return value;
     }
 
@@ -96,7 +96,7 @@ lisp_value *parser_parse_int(parser *p)
     talloc_free(numstr);
 
     lisp_value *value = lisp_value_new_int(num);
-    lisp_value_set_meta(value, metadata_copy(p->meta));
+    lisp_value_set_meta(value, metadata_dup(p->meta));
     return value;
 }
 
@@ -104,7 +104,7 @@ lisp_value *parser_parse_symbol(parser *p)
 {
     char *sym = parser_read_until(p, DELIMETER);
     lisp_value *value = lisp_value_new_symbol(sym);
-    lisp_value_set_meta(value, metadata_copy(p->meta));
+    lisp_value_set_meta(value, metadata_dup(p->meta));
     return value;
 }
 
@@ -120,7 +120,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     if (PARSER_C(p) == ')') {
         parser_next(p);
         lisp_value *value = lisp_value_new_cons_nil();
-        lisp_value_set_meta(value, metadata_copy(p->meta));
+        lisp_value_set_meta(value, metadata_dup(p->meta));
         return value;
     }
 
@@ -133,7 +133,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     }
 
     lisp_value *value = lisp_value_new_cons(cadr, cddr);
-    lisp_value_set_meta(value, metadata_copy(p->meta));
+    lisp_value_set_meta(value, metadata_dup(p->meta));
     return value;
 }
 
@@ -152,7 +152,7 @@ lisp_value *parser_parse_cons(parser *p)
     if (PARSER_C(p) == ')') {
         parser_next(p);
         lisp_value *value = lisp_value_new_cons_nil();
-        lisp_value_set_meta(value, metadata_copy(p->meta));
+        lisp_value_set_meta(value, metadata_dup(p->meta));
         return value;
     }
 
@@ -188,7 +188,7 @@ lisp_value *parser_parse_cons(parser *p)
         parser_next(p);
 
         lisp_value *value = lisp_value_new_cons(car, cdr);
-        lisp_value_set_meta(value, metadata_copy(p->meta));
+        lisp_value_set_meta(value, metadata_dup(p->meta));
         return value;
     }
 
@@ -200,7 +200,7 @@ lisp_value *parser_parse_cons(parser *p)
     }
 
     lisp_value *value = lisp_value_new_cons(car, cdr);
-    lisp_value_set_meta(value, metadata_copy(p->meta));
+    lisp_value_set_meta(value, metadata_dup(p->meta));
     return value;
 }
 

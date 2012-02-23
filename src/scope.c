@@ -13,6 +13,7 @@ scope *scope_new(scope *parent)
 void scope_set(scope *this, char *key, lisp_value *value)
 {
     hashmap_set(this->map, key, value);
+    value->meta->name = talloc_strdup(value->meta, key);
 }
 
 lisp_value *scope_get(scope *this, char *key)

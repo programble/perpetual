@@ -10,10 +10,9 @@ callstack *callstack_new()
     return this;
 }
 
-void callstack_push(callstack *this, char *call, metadata *meta)
+void callstack_push(callstack *this, metadata *meta)
 {
     callstack_node *node = talloc(this, callstack_node);
-    node->call = call;
     node->meta = meta;
     node->next = this->head;
     this->head = node;
@@ -35,8 +34,8 @@ void callstack_clear(callstack *this)
 void callstack_print(callstack *this)
 {
     for (callstack_node *node = this->head; node; node = node->next) {
-        if (node->call)
-            printf("  %s:%i:%i: in '%s'\n", node->meta->file, node->meta->line, node->meta->col, node->call);
+        if (node->meta->name)
+            printf("  %s:%i:%i: '%s'\n", node->meta->file, node->meta->line, node->meta->col, node->meta->name);
         else
             printf("  %s:%i:%i\n", node->meta->file, node->meta->line, node->meta->col);
     }

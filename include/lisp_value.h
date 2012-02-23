@@ -41,7 +41,7 @@ lisp_value *lisp_value_new_int(int *value);
 lisp_value *lisp_value_new_symbol(char *value);
 lisp_value *lisp_value_new_cons(lisp_value *car, lisp_value *cdr);
 lisp_value *lisp_value_new_cons_nil(void);
-lisp_value *lisp_value_new_builtin(lisp_builtin_func value);
+lisp_value *lisp_value_new_builtin(lisp_builtin_func value, metadata *meta);
 
 // src/lisp_value/meta.c
 void lisp_value_set_meta(lisp_value *this, metadata *meta);

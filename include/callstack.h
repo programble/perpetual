@@ -5,7 +5,6 @@
 #include "metadata.h"
 
 typedef struct callstack_node {
-    char *call;
     metadata *meta;
     struct callstack_node *next;
 } callstack_node;
@@ -16,7 +15,7 @@ typedef struct callstack {
 
 callstack *callstack_new();
 
-void callstack_push(callstack *this, char *call, metadata *meta);
+void callstack_push(callstack *this, metadata *meta);
 void callstack_pop(callstack *this);
 void callstack_clear(callstack *this);
 
