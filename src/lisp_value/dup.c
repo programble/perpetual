@@ -17,6 +17,8 @@ lisp_value *lisp_value_dup(lisp_value *this)
             return lisp_value_new_cons_nil();
         else
             return lisp_value_new_cons(lisp_value_dup(LISP_CONS_CAR(this)), lisp_value_dup(LISP_CONS_CDR(this)));
+    case LISP_TYPE_BUILTIN:
+        return lisp_value_new_builtin(LISP_BUILTIN(this));
     default:
         assert(0); return NULL;
     }

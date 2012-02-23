@@ -33,3 +33,8 @@ lisp_value *lisp_value_new_cons_nil(void)
 {
     return lisp_value_new(LISP_TYPE_CONS, NULL);
 }
+
+lisp_value *lisp_value_new_builtin(lisp_builtin_func value)
+{
+    return lisp_value_new(LISP_TYPE_BUILTIN, value);
+}

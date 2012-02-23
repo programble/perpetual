@@ -62,6 +62,9 @@ lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
     case LISP_TYPE_CONS:
         eval = lisp_value_eval_cons(this, ctx);
         break;
+    case LISP_TYPE_BUILTIN:
+        eval = lisp_value_dup(this);
+        break;
     default:
         assert(0); return NULL;
     }
