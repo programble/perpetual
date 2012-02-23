@@ -8,6 +8,7 @@
 #include "context.h"
 #include "namespace.h"
 #include "scope.h"
+#include "builtins.h"
 
 int main(int argc, char **argv)
 {
@@ -22,6 +23,7 @@ int main(int argc, char **argv)
     // Some test bindings
     scope_set(ctx->scope, "nil", lisp_value_new_cons_nil());
     scope_set(ctx->scope, "t", lisp_value_new_symbol(talloc_strdup(NULL, "t")));
+    scope_set(ctx->scope, "quote", lisp_value_new_builtin(builtin_quote));
 
     char *line;
     while ((line = readline(">> "))) {

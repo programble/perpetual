@@ -42,9 +42,15 @@ lisp_value *lisp_value_eval_symbol(lisp_value *this, context *ctx)
 
 lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
 {
-    // TODO: Call function and whatever
-    (void) ctx;
-    return lisp_value_dup(this);
+    if (LISP_CONS_NIL(this))
+        return lisp_value_dup(this);
+
+    lisp_value *call = lisp_value_eval(LISP_CONS_CAR(this), ctx);
+    if (!call)
+        return NULL;
+    lisp_value *value = lisp_value_call(call, LISP_CONS_CDR(this), ctx);
+    talloc_free(call);
+    return value;
 }
 
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx)

@@ -36,5 +36,9 @@ lisp_value *lisp_value_new_cons_nil(void)
 
 lisp_value *lisp_value_new_builtin(lisp_builtin_func value)
 {
-    return lisp_value_new(LISP_TYPE_BUILTIN, value);
+    lisp_value *this = talloc(NULL, lisp_value);
+    this->type = LISP_TYPE_BUILTIN;
+    this->value = value;
+    this->meta = NULL;
+    return this;
 }

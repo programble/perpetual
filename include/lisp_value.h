@@ -25,7 +25,7 @@ struct lisp_cons {
     lisp_value *cdr;
 };
 
-typedef lisp_value *(*lisp_builtin_func)(lisp_value *);
+typedef lisp_value *(*lisp_builtin_func)(lisp_value *, context *);
 
 #define LISP_INT(x)     (assert(x->type == LISP_TYPE_INT),     (int*)(x->value))
 #define LISP_SYMBOL(x)  (assert(x->type == LISP_TYPE_SYMBOL),  (char*)(x->value))
@@ -54,5 +54,8 @@ lisp_value *lisp_value_dup(lisp_value *this);
 
 // src/lisp_value/eval.c
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx);
+
+// src/lisp_value/call.c
+lisp_value *lisp_value_call(lisp_value *this, lisp_value *args, context *ctx);
 
 #endif /* __LISP_VALUE_H__ */
