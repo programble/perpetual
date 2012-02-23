@@ -20,10 +20,7 @@ int main(int argc, char **argv)
     namespace *core = namespace_new("core", root);
     context *ctx = context_new(core);
 
-    // Some test bindings
-    scope_set(ctx->scope, "nil", lisp_value_new_cons_nil());
-    scope_set(ctx->scope, "t", lisp_value_new_symbol(talloc_strdup(NULL, "t")));
-    scope_set(ctx->scope, "quote", lisp_value_new_builtin(builtin_quote));
+    builtins_bind(ctx->scope);
 
     char *line;
     while ((line = readline(">> "))) {
