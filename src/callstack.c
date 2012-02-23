@@ -26,6 +26,12 @@ void callstack_pop(callstack *this)
     talloc_free(node);
 }
 
+void callstack_clear(callstack *this)
+{
+    while (this->head)
+        callstack_pop(this);
+}
+
 void callstack_print(callstack *this)
 {
     for (callstack_node *node = this->head; node; node = node->next) {

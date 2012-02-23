@@ -18,6 +18,7 @@ callstack *callstack_new();
 
 void callstack_push(callstack *this, char *call, metadata *meta);
 void callstack_pop(callstack *this);
+void callstack_clear(callstack *this);
 
 void callstack_print(callstack *this);
 
