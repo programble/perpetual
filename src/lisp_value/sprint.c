@@ -25,6 +25,10 @@ char *lisp_value_sprint_cons(lisp_value *this)
 char *lisp_value_sprint(lisp_value *this)
 {
     switch (this->type) {
+        case LISP_TYPE_INT:
+            return talloc_asprintf(NULL, "%i", *LISP_INT(this));
+        case LISP_TYPE_SYMBOL:
+            return talloc_asprintf(NULL, "%s", LISP_SYMBOL(this));
         case LISP_TYPE_CONS: {
             if (LISP_CONS_NIL(this))
                 return talloc_strdup(NULL, "()");
@@ -32,10 +36,6 @@ char *lisp_value_sprint(lisp_value *this)
             talloc_free(cons);
             return s;
         }
-        case LISP_TYPE_INT:
-            return talloc_asprintf(NULL, "%i", *LISP_INT(this));
-        case LISP_TYPE_SYMBOL:
-            return talloc_asprintf(NULL, "%s", LISP_SYMBOL(this));
         default:
             assert(0); return NULL;
     }

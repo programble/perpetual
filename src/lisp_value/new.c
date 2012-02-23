@@ -11,6 +11,16 @@ static lisp_value *lisp_value_new(enum lisp_type type, void *value)
     return this;
 }
 
+lisp_value *lisp_value_new_int(int *value)
+{
+    return lisp_value_new(LISP_TYPE_INT, value);
+}
+
+lisp_value *lisp_value_new_symbol(char *value)
+{
+    return lisp_value_new(LISP_TYPE_SYMBOL, value);
+}
+
 lisp_value *lisp_value_new_cons(lisp_value *car, lisp_value *cdr)
 {
     lisp_value *this = lisp_value_new(LISP_TYPE_CONS, talloc(NULL, struct lisp_cons));
@@ -23,14 +33,3 @@ lisp_value *lisp_value_new_cons_nil(void)
 {
     return lisp_value_new(LISP_TYPE_CONS, NULL);
 }
-
-lisp_value *lisp_value_new_int(int *value)
-{
-    return lisp_value_new(LISP_TYPE_INT, value);
-}
-
-lisp_value *lisp_value_new_symbol(char *value)
-{
-    return lisp_value_new(LISP_TYPE_SYMBOL, value);
-}
-

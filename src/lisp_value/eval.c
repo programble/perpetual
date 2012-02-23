@@ -7,13 +7,6 @@
 #include "scope.h"
 #include "namespace.h"
 
-lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
-{
-    // TODO: Call function and whatever
-    (void) ctx;
-    return lisp_value_dup(this);
-}
-
 lisp_value *lisp_value_eval_symbol(lisp_value *this, context *ctx)
 {
     char *sym = LISP_SYMBOL(this);
@@ -47,23 +40,31 @@ lisp_value *lisp_value_eval_symbol(lisp_value *this, context *ctx)
     }
 }
 
+lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
+{
+    // TODO: Call function and whatever
+    (void) ctx;
+    return lisp_value_dup(this);
+}
+
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
 {
     callstack_push(ctx->callstack, NULL, this->meta);
     lisp_value *eval;
     switch (this->type) {
-    case LISP_TYPE_CONS:
-        eval = lisp_value_eval_cons(this, ctx);
+    case LISP_TYPE_INT:
+        eval = lisp_value_dup(this);
         break;
     case LISP_TYPE_SYMBOL:
         eval = lisp_value_eval_symbol(this, ctx);
         break;
-    case LISP_TYPE_INT:
-        eval = lisp_value_dup(this);
+    case LISP_TYPE_CONS:
+        eval = lisp_value_eval_cons(this, ctx);
         break;
     default:
         assert(0); return NULL;
     }
+    // TODO: Check for exception
     callstack_pop(ctx->callstack);
     return eval;
 }

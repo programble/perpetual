@@ -71,14 +71,6 @@ char *parser_read_until(parser *p, char *end)
     return talloc_strndup(NULL, start, len);
 }
 
-lisp_value *parser_parse_symbol(parser *p)
-{
-    char *sym = parser_read_until(p, DELIMETER);
-    lisp_value *value = lisp_value_new_symbol(sym);
-    lisp_value_set_meta(value, metadata_copy(p->meta));
-    return value;
-}
-
 lisp_value *parser_parse_int(parser *p)
 {
     char *numstr = parser_read_until(p, DELIMETER);
@@ -104,6 +96,14 @@ lisp_value *parser_parse_int(parser *p)
     talloc_free(numstr);
 
     lisp_value *value = lisp_value_new_int(num);
+    lisp_value_set_meta(value, metadata_copy(p->meta));
+    return value;
+}
+
+lisp_value *parser_parse_symbol(parser *p)
+{
+    char *sym = parser_read_until(p, DELIMETER);
+    lisp_value *value = lisp_value_new_symbol(sym);
     lisp_value_set_meta(value, metadata_copy(p->meta));
     return value;
 }
