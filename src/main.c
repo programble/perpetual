@@ -31,6 +31,26 @@ void parse_eval(parser *p, context *ctx)
 
     while ((value = parser_parse(p))) {
         lisp_value *eval = lisp_value_eval(value, ctx);
+        if (eval)
+            talloc_free(eval);
+        else {
+            printf("Some kind of error occurred, but I don't have exceptions yet!\n");
+            callstack_print(ctx->callstack);
+            callstack_clear(ctx->callstack);
+        }
+        talloc_free(value);
+    }
+
+    if (PARSER_ERROR(p))
+        parser_perror(p);
+}
+
+void parse_eval_print(parser *p, context *ctx)
+{
+    lisp_value *value;
+
+    while ((value = parser_parse(p))) {
+        lisp_value *eval = lisp_value_eval(value, ctx);
         if (eval) {
             char *sprint = lisp_value_sprint(eval);
             printf("%s\n", sprint);
@@ -55,7 +75,7 @@ void main_repl(context *ctx)
     char *line;
     while ((line = readline(">> "))) {
         parser *p = parser_new("<stdin>", line);
-        parse_eval(p, ctx);
+        parse_eval_print(p, ctx);
         talloc_free(p);
 
         add_history(line);
@@ -66,7 +86,7 @@ void main_repl(context *ctx)
 void main_eval(char *eval, context *ctx)
 {
     parser *p = parser_new("<eval>", eval);
-    parse_eval(p, ctx);
+    parse_eval_print(p, ctx);
     talloc_free(p);
 }
 
