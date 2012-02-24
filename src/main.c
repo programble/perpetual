@@ -1,15 +1,15 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <talloc.h>
 #include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <talloc.h>
 #include "readline.h"
 
-#include "lisp_value.h"
-#include "parser.h"
-#include "context.h"
-#include "namespace.h"
-#include "scope.h"
 #include "builtins.h"
+#include "context.h"
+#include "lisp_value.h"
+#include "namespace.h"
+#include "parser.h"
+#include "scope.h"
 
 #define VERSION_MAJOR "0"
 #define VERSION_MINOR "1"
@@ -116,5 +116,5 @@ int main(int argc, char **argv)
     talloc_free(root);
     talloc_free(ctx);
 
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "lisp_value.h"
 
@@ -18,5 +19,7 @@ lisp_value *lisp_value_call(lisp_value *this, lisp_value *args, context *ctx)
             return value;
         } else return NULL;
     }
+    default:
+        assert(0); return NULL;
     }
 }
