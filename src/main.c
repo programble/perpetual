@@ -78,9 +78,9 @@ void main_file()
 int main(int argc, char **argv)
 {
     static struct option long_options[] = {
-        {"eval"   , required_argument, NULL, 'e'},
-        {"help"   , no_argument      , NULL, 'h'},
-        {"version", no_argument      , NULL, 'V'},
+        {"eval",    required_argument, NULL, 'e'},
+        {"help",    no_argument,       NULL, 'h'},
+        {"version", no_argument,       NULL, 'V'},
         {0, 0, 0, 0}
     };
     static char short_options[] = "e:hV";
