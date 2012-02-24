@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <talloc.h>
+#include <stdbool.h>
 #include "readline.h"
 
 #include "builtins.h"
@@ -68,12 +69,13 @@ void parse_eval_print(parser *p, context *ctx)
         parser_perror(p);
 }
 
-void main_repl(context *ctx)
+void main_repl(bool prompt, context *ctx)
 {
-    print_version();
+    if (prompt)
+        print_version();
 
     char *line;
-    while ((line = readline(">> "))) {
+    while ((line = readline(prompt ? ">> " : ""))) {
         parser *p = parser_new("<stdin>", line);
         parse_eval_print(p, ctx);
         talloc_free(p);
@@ -98,22 +100,25 @@ void main_file()
 int main(int argc, char **argv)
 {
     static struct option long_options[] = {
-        {"eval",    required_argument, NULL, 'e'},
-        {"help",    no_argument,       NULL, 'h'},
-        {"version", no_argument,       NULL, 'V'},
+        {"eval",      required_argument, NULL, 'e'},
+        {"no-prompt", no_argument,       NULL, 'N'},
+        {"help",      no_argument,       NULL, 'h'},
+        {"version",   no_argument,       NULL, 'V'},
         {0, 0, 0, 0}
     };
-    static char short_options[] = "e:hV";
+    static char short_options[] = "e:NhV";
 
     char *opt_eval = NULL;
+    bool opt_prompt = true;
 
     char o;
     while ((o = getopt_long(argc, argv, short_options, long_options, NULL)) != -1) {
         switch (o) {
-        case 'e': opt_eval = optarg; break;
-        case 'h': print_usage();     return EXIT_SUCCESS;
-        case 'V': print_version();   return EXIT_SUCCESS;
-        case '?':                    return EXIT_FAILURE;
+        case 'e': opt_eval = optarg;  break;
+        case 'N': opt_prompt = false; break;
+        case 'h': print_usage();      return EXIT_SUCCESS;
+        case 'V': print_version();    return EXIT_SUCCESS;
+        case '?':                     return EXIT_FAILURE;
         }
     }
 
@@ -131,7 +136,7 @@ int main(int argc, char **argv)
     if (opt_eval)
         main_eval(opt_eval, ctx);
     else
-        main_repl(ctx);
+        main_repl(opt_prompt, ctx);
 
     talloc_free(root);
     talloc_free(ctx);
