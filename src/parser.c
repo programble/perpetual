@@ -75,11 +75,8 @@ lisp_value *parser_parse_int(parser *p)
 {
     char *numstr = parser_read_until(p, DELIMETER);
 
-    if (!strcmp(numstr, "-")) {
-        // Construct a symbol instead
-        lisp_value *value = lisp_value_new_symbol(numstr);
-        lisp_value_set_meta(value, metadata_dup(p->meta));
-        return value;
+    if (!strcmp(numstr, "-")) { // Construct a symbol instead
+        return lisp_value_new_symbol(numstr);
     }
 
     // A bit of a hack to detect trailing garbage
@@ -95,21 +92,19 @@ lisp_value *parser_parse_int(parser *p)
     }
     talloc_free(numstr);
 
-    lisp_value *value = lisp_value_new_int(num);
-    lisp_value_set_meta(value, metadata_dup(p->meta));
-    return value;
+    return lisp_value_new_int(num);
 }
 
 lisp_value *parser_parse_symbol(parser *p)
 {
     char *sym = parser_read_until(p, DELIMETER);
-    lisp_value *value = lisp_value_new_symbol(sym);
-    lisp_value_set_meta(value, metadata_dup(p->meta));
-    return value;
+    return lisp_value_new_symbol(sym);
 }
 
 lisp_value *parser_parse_cons_cdr(parser *p)
 {
+    metadata *meta = metadata_dup(p->meta);
+
     parser_skip_whitespace(p);
     if (PARSER_EOF(p)) {
         PARSER_SET_ERROR(p, PARSER_EEOF, "cons");
@@ -120,7 +115,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     if (PARSER_C(p) == ')') {
         parser_next(p);
         lisp_value *value = lisp_value_new_cons_nil();
-        lisp_value_set_meta(value, metadata_dup(p->meta));
+        lisp_value_set_meta(value, meta);
         return value;
     }
 
@@ -133,7 +128,7 @@ lisp_value *parser_parse_cons_cdr(parser *p)
     }
 
     lisp_value *value = lisp_value_new_cons(cadr, cddr);
-    lisp_value_set_meta(value, metadata_dup(p->meta));
+    lisp_value_set_meta(value, meta);
     return value;
 }
 
@@ -151,9 +146,7 @@ lisp_value *parser_parse_cons(parser *p)
     // Empty list (nil)
     if (PARSER_C(p) == ')') {
         parser_next(p);
-        lisp_value *value = lisp_value_new_cons_nil();
-        lisp_value_set_meta(value, metadata_dup(p->meta));
-        return value;
+        return lisp_value_new_cons_nil();
     }
 
     lisp_value *car = parser_parse(p);
@@ -187,9 +180,7 @@ lisp_value *parser_parse_cons(parser *p)
         }
         parser_next(p);
 
-        lisp_value *value = lisp_value_new_cons(car, cdr);
-        lisp_value_set_meta(value, metadata_dup(p->meta));
-        return value;
+        return lisp_value_new_cons(car, cdr);
     }
 
     // Proper list
@@ -199,9 +190,7 @@ lisp_value *parser_parse_cons(parser *p)
         return NULL;
     }
 
-    lisp_value *value = lisp_value_new_cons(car, cdr);
-    lisp_value_set_meta(value, metadata_dup(p->meta));
-    return value;
+    return lisp_value_new_cons(car, cdr);
 }
 
 lisp_value *parser_parse(parser *p)
@@ -211,24 +200,31 @@ lisp_value *parser_parse(parser *p)
 
     parser_skip_whitespace(p);
 
+    // Skip comments
+    if (PARSER_C(p) == ';')
+        while (parser_next(p) != '\n' && !PARSER_EOF(p));
+
     // Nothing more to parse (NULL with no error)
     if (PARSER_EOF(p)) return NULL;
 
+    // Make a copy of the metadata for the next parsed value
+    metadata *meta = metadata_dup(p->meta);
+    lisp_value *value = NULL;
+
     char c = PARSER_C(p);
 
-    if (c == ')') { // A mismatched close-paren
+    if (c == ')') // A mismatched close-paren
         p->error = PARSER_EMISMATCH;
-        return NULL;
-    }
+    else if (c == '(')
+        value = parser_parse_cons(p);
+    else if ((c >= '0' && c <= '9') || c == '-')
+        value = parser_parse_int(p);
+    else
+        value = parser_parse_symbol(p);
 
-    if (c == ';') { // Comment to end of line
-        while (parser_next(p) != '\n' && p->index < p->len);
-        return parser_parse(p);
-    }
-
-    if (c == '(')
-        return parser_parse_cons(p);
-    if ((c >= '0' && c <= '9') || c == '-')
-        return parser_parse_int(p);
-    return parser_parse_symbol(p);
+    if (value)
+        lisp_value_set_meta(value, meta);
+    else
+        talloc_free(meta);
+    return value;
 }
