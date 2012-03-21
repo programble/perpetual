@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <talloc.h>
 #include <stdbool.h>
+#include <string.h>
 #include "readline.h"
 
 #include "builtins.h"
@@ -92,9 +93,26 @@ void main_eval(char *eval, context *ctx)
     talloc_free(p);
 }
 
-void main_file()
+void main_file(char *filename, context *ctx)
 {
-    // TODO: Implement
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror(filename);
+        // TODO: exit with EXIT_FAILURE
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long flen = ftell(file);
+    rewind(file);
+
+    char *fdata = talloc_array(NULL, char, flen);
+    fread(fdata, sizeof(char), flen, file);
+
+    parser *p = parser_new(filename, fdata);
+    parse_eval(p, ctx);
+    talloc_free(p);
+    talloc_free(fdata);
 }
 
 int main(int argc, char **argv)
@@ -108,7 +126,7 @@ int main(int argc, char **argv)
     };
     static char short_options[] = "e:NhV";
 
-    char *opt_eval = NULL;
+    char *opt_eval = NULL, *opt_file = NULL;
     bool opt_prompt = true;
 
     char o;
@@ -121,10 +139,8 @@ int main(int argc, char **argv)
         case '?':                     return EXIT_FAILURE;
         }
     }
-
-    if (optind < argc) {
-        // TODO: Filename is in argv[optind]
-    }
+    if (optind < argc)
+        opt_file = argv[optind];
 
     // Set up root namespace and evaluation context
     namespace *root = namespace_new("", NULL);
@@ -133,7 +149,9 @@ int main(int argc, char **argv)
 
     builtins_bind(ctx->scope);
 
-    if (opt_eval)
+    if (opt_file)
+        main_file(opt_file, ctx);
+    else if (opt_eval)
         main_eval(opt_eval, ctx);
     else
         main_repl(opt_prompt, ctx);
