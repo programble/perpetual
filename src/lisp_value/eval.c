@@ -55,28 +55,16 @@ lisp_value *lisp_value_eval_cons(lisp_value *this, context *ctx)
 
 lisp_value *lisp_value_eval(lisp_value *this, context *ctx)
 {
-    callstack_push(ctx->callstack, this->meta);
-
-    lisp_value *eval;
     switch (this->type) {
     case LISP_TYPE_INT:
-        eval = lisp_value_dup(this);
-        break;
+        return lisp_value_dup(this);
     case LISP_TYPE_SYMBOL:
-        eval = lisp_value_eval_symbol(this, ctx);
-        break;
+        return lisp_value_eval_symbol(this, ctx);
     case LISP_TYPE_CONS:
-        eval = lisp_value_eval_cons(this, ctx);
-        break;
+        return lisp_value_eval_cons(this, ctx);
     case LISP_TYPE_BUILTIN:
-        eval = lisp_value_dup(this);
-        break;
+        return lisp_value_dup(this);
     default:
         assert(0); return NULL;
     }
-
-    if (!eval)
-        return NULL;
-    callstack_pop(ctx->callstack);
-    return eval;
 }
