@@ -10,6 +10,26 @@ callstack *callstack_new()
     return this;
 }
 
+callstack_node *callstack_node_dup(callstack_node *this)
+{
+    callstack_node *dup = talloc(NULL, callstack_node);
+    dup->meta = talloc_steal(dup, metadata_dup(this->meta));
+    dup->next = NULL;
+    return dup;
+}
+
+callstack *callstack_dup(callstack *this)
+{
+    callstack *dup = talloc(NULL, callstack);
+    dup->head = talloc_steal(dup, callstack_node_dup(this->head));
+    callstack_node *dup_node = dup->head;
+    for (callstack_node *node = this->head->next; node; node = node->next) {
+        dup_node->next = talloc_steal(dup, callstack_node_dup(node));
+        dup_node = dup_node->next;
+    }
+    return dup;
+}
+
 void callstack_push(callstack *this, metadata *meta)
 {
     callstack_node *node = talloc(this, callstack_node);
