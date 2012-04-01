@@ -82,7 +82,8 @@ void main_repl(bool prompt, context *ctx)
         parse_eval_print(p, ctx);
         talloc_free(p);
 
-        add_history(line);
+        if (*line)
+            add_history(line);
         READLINE_FREE(line);
     }
 }
