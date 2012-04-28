@@ -1,5 +1,4 @@
 #include <talloc.h>
-#include <stdio.h>
 
 #include "callstack.h"
 
@@ -51,12 +50,14 @@ void callstack_clear(callstack *this)
         callstack_pop(this);
 }
 
-void callstack_print(callstack *this)
+char *callstack_sprint(callstack *this)
 {
+    char *sprint = talloc_strdup(NULL, "");
     for (callstack_node *node = this->head; node; node = node->next) {
         if (node->meta->name)
-            printf("  %s:%i:%i: '%s'\n", node->meta->file, node->meta->line, node->meta->col, node->meta->name);
+            sprint = talloc_asprintf_append(sprint, "  %s:%i:%i %s\n", node->meta->file, node->meta->line, node->meta->col, node->meta->name);
         else
-            printf("  %s:%i:%i\n", node->meta->file, node->meta->line, node->meta->col);
+            sprint = talloc_asprintf_append(sprint, "  %s:%i:%i\n", node->meta->file, node->meta->line, node->meta->col);
     }
+    return sprint;
 }

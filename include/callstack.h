@@ -20,6 +20,6 @@ void callstack_push(callstack *this, metadata *meta);
 void callstack_pop(callstack *this);
 void callstack_clear(callstack *this);
 
-void callstack_print(callstack *this);
+char *callstack_sprint(callstack *this);
 
 #endif /* __CALLSTACK_H__ */
