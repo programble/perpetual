@@ -38,7 +38,9 @@ void parse_eval(parser *p, context *ctx)
             talloc_free(eval);
         else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
-            callstack_print(ctx->callstack);
+            char *sprint = callstack_sprint(ctx->callstack);
+            printf("%s", sprint);
+            talloc_free(sprint);
             callstack_clear(ctx->callstack);
         }
         talloc_free(value);
@@ -61,7 +63,9 @@ void parse_eval_print(parser *p, context *ctx)
             talloc_free(eval);
         } else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
-            callstack_print(ctx->callstack);
+            char *sprint = callstack_sprint(ctx->callstack);
+            printf("%s", sprint);
+            talloc_free(sprint);
             callstack_clear(ctx->callstack);
         }
         talloc_free(value);
