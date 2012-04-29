@@ -18,6 +18,19 @@
 #define VERSION_MINOR "1"
 #define VERSION_PATCH "0"
 
+#define SPRINT_PRINT(type, obj) \
+    do { \
+        char *sprint = type##_sprint(obj); \
+        printf("%s", sprint); \
+        talloc_free(sprint); \
+    } while (0)
+#define SPRINT_PRINTLN(type, obj) \
+    do { \
+        char *sprint = type##_sprint(obj); \
+        printf("%s\n", sprint); \
+        talloc_free(sprint); \
+    } while (0)
+
 void print_version()
 {
     printf("Perpetual " VERSION_MAJOR "." VERSION_MINOR "." VERSION_PATCH "\n");
@@ -38,9 +51,7 @@ void parse_eval(parser *p, context *ctx)
             talloc_free(eval);
         else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
-            char *sprint = callstack_sprint(ctx->callstack);
-            printf("%s", sprint);
-            talloc_free(sprint);
+            SPRINT_PRINT(callstack, ctx->callstack);
             callstack_clear(ctx->callstack);
         }
         talloc_free(value);
@@ -57,15 +68,11 @@ void parse_eval_print(parser *p, context *ctx)
     while ((value = parser_parse(p))) {
         lisp_value *eval = lisp_value_eval(value, ctx);
         if (eval) {
-            char *sprint = lisp_value_sprint(eval);
-            printf("%s\n", sprint);
-            talloc_free(sprint);
+            SPRINT_PRINTLN(lisp_value, eval);
             talloc_free(eval);
         } else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
-            char *sprint = callstack_sprint(ctx->callstack);
-            printf("%s", sprint);
-            talloc_free(sprint);
+            SPRINT_PRINT(callstack, ctx->callstack);
             callstack_clear(ctx->callstack);
         }
         talloc_free(value);
