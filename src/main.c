@@ -41,14 +41,18 @@ void print_usage()
     // TODO: Implement
 }
 
-void parse_eval(parser *p, context *ctx)
+void parse_eval(parser *p, context *ctx, bool print)
 {
     lisp_value *value;
 
     while ((value = parser_parse(p))) {
         callstack_push(ctx->callstack, value->meta);
+
         lisp_value *eval = lisp_value_eval(value, ctx);
+
         if (eval) {
+            if (print)
+                SPRINT_PRINTLN(lisp_value, eval);
             talloc_free(eval);
             callstack_pop(ctx->callstack);
         } else {
@@ -56,29 +60,7 @@ void parse_eval(parser *p, context *ctx)
             SPRINT_PRINT(callstack, ctx->callstack);
             callstack_clear(ctx->callstack);
         }
-        talloc_free(value);
-    }
 
-    if (PARSER_ERROR(p))
-        parser_perror(p);
-}
-
-void parse_eval_print(parser *p, context *ctx)
-{
-    lisp_value *value;
-
-    while ((value = parser_parse(p))) {
-        callstack_push(ctx->callstack, value->meta);
-        lisp_value *eval = lisp_value_eval(value, ctx);
-        if (eval) {
-            SPRINT_PRINTLN(lisp_value, eval);
-            talloc_free(eval);
-            callstack_pop(ctx->callstack);
-        } else {
-            printf("Some kind of error occurred, but I don't have exceptions yet!\n");
-            SPRINT_PRINT(callstack, ctx->callstack);
-            callstack_clear(ctx->callstack);
-        }
         talloc_free(value);
     }
 
@@ -94,7 +76,7 @@ void main_repl(bool prompt, context *ctx)
     char *line;
     while ((line = readline(prompt ? ">> " : ""))) {
         parser *p = parser_new("<stdin>", line);
-        parse_eval_print(p, ctx);
+        parse_eval(p, ctx, true);
         talloc_free(p);
 
         if (*line)
@@ -106,7 +88,7 @@ void main_repl(bool prompt, context *ctx)
 void main_eval(char *eval, context *ctx)
 {
     parser *p = parser_new("<eval>", eval);
-    parse_eval_print(p, ctx);
+    parse_eval(p, ctx, true);
     talloc_free(p);
 }
 
@@ -127,7 +109,7 @@ void main_file(char *filename, context *ctx)
     fread(fdata, sizeof(char), flen, file);
 
     parser *p = parser_new(filename, fdata);
-    parse_eval(p, ctx);
+    parse_eval(p, ctx, false);
     talloc_free(p);
     talloc_free(fdata);
 }
