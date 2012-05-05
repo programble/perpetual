@@ -68,7 +68,7 @@ void parse_eval(parser *p, context *ctx, bool print)
         parser_perror(p);
 }
 
-void main_repl(bool prompt, context *ctx)
+int main_repl(bool prompt, context *ctx)
 {
     if (prompt)
         print_version();
@@ -83,22 +83,24 @@ void main_repl(bool prompt, context *ctx)
             add_history(line);
         READLINE_FREE(line);
     }
+
+    return EXIT_SUCCESS;
 }
 
-void main_eval(char *eval, context *ctx)
+int main_eval(char *eval, context *ctx)
 {
     parser *p = parser_new("<eval>", eval);
     parse_eval(p, ctx, true);
     talloc_free(p);
+    return EXIT_SUCCESS;
 }
 
-void main_file(char *filename, context *ctx)
+int main_file(char *filename, context *ctx)
 {
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror(filename);
-        // TODO: exit with EXIT_FAILURE
-        return;
+        return EXIT_FAILURE;
     }
 
     fseek(file, 0, SEEK_END);
@@ -112,6 +114,8 @@ void main_file(char *filename, context *ctx)
     parse_eval(p, ctx, false);
     talloc_free(p);
     talloc_free(fdata);
+
+    return EXIT_SUCCESS;
 }
 
 int main(int argc, char **argv)
@@ -148,15 +152,16 @@ int main(int argc, char **argv)
 
     builtins_bind(ctx->scope);
 
+    int exit_status;
     if (opt_file)
-        main_file(opt_file, ctx);
+        exit_status = main_file(opt_file, ctx);
     else if (opt_eval)
-        main_eval(opt_eval, ctx);
+        exit_status = main_eval(opt_eval, ctx);
     else
-        main_repl(opt_prompt, ctx);
+        exit_status = main_repl(opt_prompt, ctx);
 
     talloc_free(root);
     talloc_free(ctx);
 
-    return EXIT_SUCCESS;
+    return exit_status;
 }
