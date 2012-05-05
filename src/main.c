@@ -46,10 +46,12 @@ void parse_eval(parser *p, context *ctx)
     lisp_value *value;
 
     while ((value = parser_parse(p))) {
+        callstack_push(ctx->callstack, value->meta);
         lisp_value *eval = lisp_value_eval(value, ctx);
-        if (eval)
+        if (eval) {
             talloc_free(eval);
-        else {
+            callstack_pop(ctx->callstack);
+        } else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
             SPRINT_PRINT(callstack, ctx->callstack);
             callstack_clear(ctx->callstack);
@@ -66,10 +68,12 @@ void parse_eval_print(parser *p, context *ctx)
     lisp_value *value;
 
     while ((value = parser_parse(p))) {
+        callstack_push(ctx->callstack, value->meta);
         lisp_value *eval = lisp_value_eval(value, ctx);
         if (eval) {
             SPRINT_PRINTLN(lisp_value, eval);
             talloc_free(eval);
+            callstack_pop(ctx->callstack);
         } else {
             printf("Some kind of error occurred, but I don't have exceptions yet!\n");
             SPRINT_PRINT(callstack, ctx->callstack);
