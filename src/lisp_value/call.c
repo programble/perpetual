@@ -14,10 +14,8 @@ lisp_value *lisp_value_call(lisp_value *this, lisp_value *args, context *ctx)
     case LISP_TYPE_BUILTIN: {
         callstack_push(ctx->callstack, this->meta);
         lisp_value *value = LISP_BUILTIN(this)(args, ctx);
-        if (value) {
-            callstack_pop(ctx->callstack);
-            return value;
-        } else return NULL;
+        callstack_pop(ctx->callstack);
+        return value;
     }
     default:
         assert(0); return NULL;

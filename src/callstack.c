@@ -44,12 +44,6 @@ void callstack_pop(callstack *this)
     talloc_free(node);
 }
 
-void callstack_clear(callstack *this)
-{
-    while (this->head)
-        callstack_pop(this);
-}
-
 char *callstack_sprint(callstack *this)
 {
     char *sprint = talloc_strdup(NULL, "");
