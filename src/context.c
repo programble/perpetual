@@ -10,5 +10,6 @@ context *context_new(namespace *ns)
     this->ns = ns;
     this->scope = ns->scope;
     this->callstack = talloc_steal(this, callstack_new());
+    this->exception = NULL;
     return this;
 }
