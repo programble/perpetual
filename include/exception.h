@@ -15,6 +15,6 @@ typedef struct exception {
     callstack *callstack;
 } exception;
 
-exception *exception_new(metadata *origin, callstack *backtrace, enum exception_type type, const char *format, ...);
+exception *exception_new(callstack *backtrace, enum exception_type type, const char *format, ...);
 
 #endif
