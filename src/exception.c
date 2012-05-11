@@ -16,3 +16,17 @@ exception *exception_new(callstack *backtrace, enum exception_type type, const c
 
     return this;
 }
+
+static const char *exception_string[] = {
+    "Error",
+    "ArgumentError",
+};
+
+char *exception_sprint(exception *this)
+{
+    char *sprint = talloc_asprintf(NULL, "%s: %s\n", exception_string[this->type], this->message);
+    char *callstack = callstack_sprint(this->callstack);
+    sprint = talloc_asprintf_append(sprint, "%s", callstack);
+    talloc_free(callstack);
+    return sprint;
+}

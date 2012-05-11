@@ -7,6 +7,7 @@
 
 enum exception_type {
     EXCEPTION_ERROR,
+    EXCEPTION_ARGUMENT,
 };
 
 typedef struct exception {
@@ -16,5 +17,7 @@ typedef struct exception {
 } exception;
 
 exception *exception_new(callstack *backtrace, enum exception_type type, const char *format, ...);
+
+char *exception_sprint(exception *this);
 
 #endif
