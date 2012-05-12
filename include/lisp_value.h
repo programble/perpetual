@@ -58,4 +58,7 @@ lisp_value *lisp_value_eval(lisp_value *this, context *ctx);
 // src/lisp_value/call.c
 lisp_value *lisp_value_call(lisp_value *this, lisp_value *args, context *ctx);
 
+// src/lisp_value/cons.c
+int lisp_cons_count(lisp_value *this);
+
 #endif /* __LISP_VALUE_H__ */
