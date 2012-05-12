@@ -2,9 +2,9 @@
 
 #include "builtins.h"
 
-lisp_value *builtin_atom(lisp_value *args, context *ctx)
+lisp_value *builtin_atom(int argc, lisp_value *args, context *ctx)
 {
-    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+    if (argc != 1) {
         // TODO: Set error
         (void) ctx;
         return NULL;
@@ -21,9 +21,9 @@ lisp_value *builtin_atom(lisp_value *args, context *ctx)
         return lisp_value_new_cons_nil();
 }
 
-lisp_value *builtin_car(lisp_value *args, context *ctx)
+lisp_value *builtin_car(int argc, lisp_value *args, context *ctx)
 {
-    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+    if (argc != 1) {
         // TODO: Set error
         (void) ctx;
         return NULL;
@@ -47,9 +47,9 @@ lisp_value *builtin_car(lisp_value *args, context *ctx)
     return car;
 }
 
-lisp_value *builtin_cdr(lisp_value *args, context *ctx)
+lisp_value *builtin_cdr(int argc, lisp_value *args, context *ctx)
 {
-    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+    if (argc != 1) {
         // TODO: Set error
         (void) ctx;
         return NULL;
@@ -73,9 +73,9 @@ lisp_value *builtin_cdr(lisp_value *args, context *ctx)
     return cdr;
 }
 
-lisp_value *builtin_quote(lisp_value *args, context *ctx)
+lisp_value *builtin_quote(int argc, lisp_value *args, context *ctx)
 {
-    if (LISP_CONS_NIL(args) || !LISP_CONS_NIL(LISP_CONS_CDR(args))) {
+    if (argc != 1) {
         // TODO: Set error
         (void) ctx;
         return NULL;

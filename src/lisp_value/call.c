@@ -12,8 +12,9 @@ lisp_value *lisp_value_call(lisp_value *this, lisp_value *args, context *ctx)
         // TODO: Set exception (not callable)
         return NULL;
     case LISP_TYPE_BUILTIN: {
+        int argc = lisp_cons_count(args);
         callstack_push(ctx->callstack, this->meta);
-        lisp_value *value = LISP_BUILTIN(this)(args, ctx);
+        lisp_value *value = LISP_BUILTIN(this)(argc, args, ctx);
         callstack_pop(ctx->callstack);
         return value;
     }
