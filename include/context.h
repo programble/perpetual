@@ -3,18 +3,17 @@
 #define __CONTEXT_H__
 
 #include "callstack.h"
-#include "exception.h"
 
-// Including scope.h and namespace.h here would cause issues
-// They get included in context.c, so no worries
+// Including the proper headers here would cause issues
 struct scope;
 struct namespace;
+struct lisp_value;
 
 typedef struct context {
     struct namespace *ns;
     struct scope *scope;
     callstack *callstack;
-    exception *exception;
+    struct lisp_value *exception;
 } context;
 
 context *context_new(struct namespace *ns);
